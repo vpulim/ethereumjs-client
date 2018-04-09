@@ -1,5 +1,7 @@
 # SYNOPSIS
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ethereumjs/ethereumjs-client.svg)](https://greenkeeper.io/)
+
 [![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs-lib.svg?style=flat-square)](https://gitter.im/ethereum/ethereumjs-lib) or #ethereumjs on freenode
 
 This is the work repository for the EthereumJS main chain client implementation project.
