@@ -1,6 +1,6 @@
 {
   "name": "ethereumjs-client",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "EthereumJS client implementation",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "light",
     "fast"
   ],
-  "author": "Holger Drewes (Holger.Drewes@gmail.com)",
+  "author": "Vinay Pulim (v@pulim.com)",
   "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/ethereumjs/ethereumjs-client/issues"
@@ -37,6 +37,7 @@
     "ms": "^2.1.1",
     "rlp": "^2.0.0",
     "winston": "^3.0.0-rc4",
+    "chalk": "^2.4.1",
     "yargs": "^11.0.0"
   },
   "devDependencies": {
