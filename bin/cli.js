@@ -8,7 +8,6 @@ const { parse } = require('../lib/util')
 const Node = require('../lib/node')
 const jayson = require('jayson')
 const RPCManager = require('../lib/rpc')
-const { randomBytes } = require('crypto')
 const os = require('os')
 const path = require('path')
 
@@ -31,16 +30,11 @@ const args = require('yargs')
     },
     'transports': {
       describe: 'Network transports',
-      choices: [ 'rlpx', 'libp2p' ],
-      default: 'rlpx',
+      default: ['rlpx:port=30303', 'libp2p:port=30304'],
       array: true
     },
     'bootnodes': {
       describe: 'Comma separated RLPx bootstrap enode URLs'
-    },
-    'port': {
-      describe: 'Network listening port',
-      default: 30303
     },
     'rpc': {
       describe: 'Enable the JSON-RPC server',
@@ -64,11 +58,6 @@ const args = require('yargs')
     'params': {
       describe: 'Path to chain parameters json file',
       coerce: path.resolve
-    },
-    'key': {
-      describe: '32-byte hex string to generate key pair from',
-      default: 'random',
-      coerce: key => key.length === 64 ? Buffer.from(key, 'hex') : randomBytes(32)
     }
   })
   .locale('en_EN')
@@ -83,6 +72,7 @@ async function runNode (options) {
   node.on('synchronized', () => logger.info('Synchronized'))
   logger.info(`Connecting to network: ${options.common.chainName()}`)
   await node.open()
+  logger.info(`Data directory: ${options.dataDir}`)
   logger.info('Synchronizing blockchain...')
   node.start()
 
@@ -111,8 +101,7 @@ async function run () {
     localPort: args.port,
     rpcport: args.rpcport,
     rpcaddr: args.rpcaddr,
-    bootnodes: parse.bootnodes(args.bootnodes),
-    privateKey: args.key
+    bootnodes: parse.bootnodes(args.bootnodes)
   }
   const node = await runNode(options)
 
