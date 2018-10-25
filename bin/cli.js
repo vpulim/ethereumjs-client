@@ -5,11 +5,14 @@ const Common = require('ethereumjs-common')
 const chains = require('ethereumjs-common/chains')
 const { getLogger } = require('../lib/logging')
 const { parse } = require('../lib/util')
+const { fromName: serverFromName } = require('./net/server')
 const Node = require('../lib/node')
 const jayson = require('jayson')
 const RPCManager = require('../lib/rpc')
+const level = require('level')
 const os = require('os')
 const path = require('path')
+const fs = require('fs-extra')
 
 const networks = Object.entries(chains.names)
 const args = require('yargs')
@@ -101,13 +104,22 @@ async function run () {
   const networkDirName = args.network === 'mainnet' ? '' : `${args.network}/`
   const chainParams = args.params ? await parse.params(args.params) : args.network
   const common = new Common(chainParams)
+  const servers = parse.transports(args.transports).map(t => {
+    const Server = serverFromName(t.name)
+    if (t.name === 'rlpx') {
+      t.options.bootnodes = t.options.bootnodes || common.bootstrapNodes()
+    }
+    return new Server(Object.assign({}, t.options))
+  })
+  const dataDir = `${args.datadir}/${networkDirName}ethereumjs/${syncDirName}`
+  fs.ensureDirSync(dataDir)
   const options = {
-    common: common,
-    logger: logger,
-    transports: args.transports,
+    common,
+    logger,
+    servers,
     syncmode: args.syncmode,
     lightserv: args.lightserv,
-    dataDir: `${args.datadir}/${networkDirName}ethereumjs/${syncDirName}`,
+    db: level(dataDir),
     rpcport: args.rpcport,
     rpcaddr: args.rpcaddr
   }

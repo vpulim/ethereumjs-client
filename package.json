@@ -2,8 +2,9 @@
   "name": "ethereumjs-client",
   "version": "0.0.1",
   "description": "EthereumJS client implementation",
+  "main": "./lib/index.js",
   "bin": {
-    "ethereumjs": "bin/cli.js"
+    "ethereumjs": "./bin/cli.js"
   },
   "scripts": {
     "coverage": "nyc npm run test && nyc report --reporter=text-lcov > .nyc_output/lcov.info",
@@ -20,9 +21,13 @@
     "ethereum",
     "ethereumjs",
     "client",
+    "blockchain",
     "light",
     "fast"
   ],
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "author": "Vinay Pulim (v@pulim.com)",
   "license": "MPL-2.0",
   "bugs": {
@@ -39,8 +44,7 @@
     "ethereumjs-util": "^5.2.0",
     "fs-extra": "^6.0.1",
     "jayson": "^2.0.6",
-    "leveldown": "^1.9.0",
-    "levelup": "^1.3.9",
+    "level": "^4.0.0",
     "libp2p-tcp": "^0.13.0",
     "libp2p-websockets": "^0.12.0",
     "libp2p-bootstrap": "^0.9.3",
