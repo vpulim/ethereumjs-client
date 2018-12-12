@@ -1,14 +1,15 @@
 const tape = require('tape')
 const Block = require('ethereumjs-block')
 const util = require('ethereumjs-util')
-const { Chain, BlockPool } = require('../../lib/blockchain')
-const { defaultLogger } = require('../../lib/logging')
+const { Chain } = require('../../../lib/blockchain')
+const { BlockQueue } = require('../../../lib/sync/queue')
+const { defaultLogger } = require('../../../lib/logging')
 defaultLogger.silent = true
 
-tape('[BlockPool]', t => {
+tape('[BlockQueue]', t => {
   t.test('should add block segment to chain', async (t) => {
     const chain = new Chain() // eslint-disable-line no-new
-    const pool = new BlockPool({ chain })
+    const pool = new BlockQueue({ chain })
     await pool.open()
 
     const block1 = new Block()
@@ -32,7 +33,7 @@ tape('[BlockPool]', t => {
 
   t.test('should get pool size', async (t) => {
     const chain = new Chain() // eslint-disable-line no-new
-    const pool = new BlockPool({ chain })
+    const pool = new BlockQueue({ chain })
     await pool.open()
 
     const block1 = new Block()
@@ -55,7 +56,7 @@ tape('[BlockPool]', t => {
 
   t.test('should check opened state', async (t) => {
     const chain = new Chain() // eslint-disable-line no-new
-    const pool = new BlockPool({ chain })
+    const pool = new BlockQueue({ chain })
     t.equal(await pool.add([]), false, 'not opened')
     await pool.open()
     t.equal(await pool.open(), false, 'already opened')

@@ -2,20 +2,20 @@ const tape = require('tape-catch')
 const td = require('testdouble')
 const BN = require('bn.js')
 const EventEmitter = require('events')
-const { defaultLogger } = require('../../lib/logging')
+const { defaultLogger } = require('../../../lib/logging')
 defaultLogger.silent = true
 
 tape('[HeaderFetcher]', t => {
   class PeerPool extends EventEmitter {}
-  td.replace('../../lib/net/peerpool', PeerPool)
-  const HeaderPool = td.constructor()
-  HeaderPool.prototype.open = td.func()
-  HeaderPool.prototype.add = td.func()
-  td.when(HeaderPool.prototype.open()).thenResolve()
+  td.replace('../../../lib/net/peerpool', PeerPool)
+  const HeaderQueue = td.constructor()
+  HeaderQueue.prototype.open = td.func()
+  HeaderQueue.prototype.add = td.func()
+  td.when(HeaderQueue.prototype.open()).thenResolve()
   const headers = [{number: 1}, {number: 2}]
-  td.when(HeaderPool.prototype.add(headers)).thenReject(new Error('err0'))
-  td.replace('../../lib/blockchain', { HeaderPool })
-  const HeaderFetcher = require('../../lib/sync/headerfetcher')
+  td.when(HeaderQueue.prototype.add(headers)).thenReject(new Error('err0'))
+  td.replace('../../../lib/sync/queue', { HeaderQueue })
+  const HeaderFetcher = require('../../../lib/sync/fetcher/headerfetcher')
   const ONE = new BN(1)
   const TWO = new BN(2)
 

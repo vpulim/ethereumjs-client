@@ -5,8 +5,6 @@ const level = require('level-browserify')
 
 // Blockchain
 exports.Chain = require('../lib/blockchain/chain')
-exports.BlockPool = require('../lib/blockchain/blockpool')
-exports.HeaderPool = require('../lib/blockchain/headerpool')
 
 // Handler
 exports.Handler = require('../lib/handler/handler')
