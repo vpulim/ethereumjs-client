@@ -2,11 +2,12 @@ const tape = require('tape')
 const tmp = require('tmp')
 const Block = require('ethereumjs-block')
 const util = require('ethereumjs-util')
-const { Chain, HeaderPool } = require('../../lib/blockchain')
-const { defaultLogger } = require('../../lib/logging')
+const { Chain } = require('../../../lib/blockchain')
+const { HeaderQueue } = require('../../../lib/sync/queue')
+const { defaultLogger } = require('../../../lib/logging')
 defaultLogger.silent = true
 
-tape('[HeaderPool]', t => {
+tape('[HeaderQueue]', t => {
   const config = {}
 
   t.test('should add header segment to chain', async (t) => {
@@ -14,7 +15,7 @@ tape('[HeaderPool]', t => {
     config.dataDir = `${tmpdir.name}/chaindb`
 
     const chain = new Chain(config) // eslint-disable-line no-new
-    const pool = new HeaderPool({ chain })
+    const pool = new HeaderQueue({ chain })
     await pool.open()
 
     const header1 = new Block.Header()
@@ -41,7 +42,7 @@ tape('[HeaderPool]', t => {
     config.dataDir = `${tmpdir.name}/chaindb`
 
     const chain = new Chain(config) // eslint-disable-line no-new
-    const pool = new HeaderPool({ chain })
+    const pool = new HeaderQueue({ chain })
     t.equal(await pool.add([]), false, 'not opened')
     t.end()
   })

@@ -2,20 +2,20 @@ const tape = require('tape-catch')
 const td = require('testdouble')
 const BN = require('bn.js')
 const EventEmitter = require('events')
-const { defaultLogger } = require('../../lib/logging')
+const { defaultLogger } = require('../../../lib/logging')
 defaultLogger.silent = true
 
 tape('[BlockFetcher]', t => {
   class PeerPool extends EventEmitter {}
-  td.replace('../../lib/net/peerpool', PeerPool)
-  const BlockPool = td.constructor()
-  BlockPool.prototype.open = td.func()
-  BlockPool.prototype.add = td.func()
-  td.when(BlockPool.prototype.open()).thenResolve()
+  td.replace('../../../lib/net/peerpool', PeerPool)
+  const BlockQueue = td.constructor()
+  BlockQueue.prototype.open = td.func()
+  BlockQueue.prototype.add = td.func()
+  td.when(BlockQueue.prototype.open()).thenResolve()
   const blocks = [{header: {number: 1}}, {header: {number: 2}}]
-  td.when(BlockPool.prototype.add(blocks)).thenReject(new Error('err0'))
-  td.replace('../../lib/blockchain', { BlockPool })
-  const BlockFetcher = require('../../lib/sync/blockfetcher')
+  td.when(BlockQueue.prototype.add(blocks)).thenReject(new Error('err0'))
+  td.replace('../../../lib/sync/queue', { BlockQueue })
+  const BlockFetcher = require('../../../lib/sync/fetcher/blockfetcher')
   const ONE = new BN(1)
   const TWO = new BN(2)
 

@@ -183,13 +183,13 @@ to help contributors better understand how the project is organized.
 
 - ``/bin`` Contains the CLI script for the ``ethereumjs`` command
 - ``/docs`` Contains auto-generated API docs as well as other supporting documentation
-- ``/lib/blockchain`` Contains the ``Chain``, ``BlockPool`` and ``HeaderPool`` classes.
+- ``/lib/blockchain`` Contains the ``Chain`` class.
 - ``/lib/net`` Contains all of the network layer classes including ``Peer``, ``Protocol`` and its subclasses,
   ``Server`` and its subclasses, and ``PeerPool``.
 - ``/lib/service`` Contains the various services. Currently, only ``EthereumService`` is implemented.
 - ``/lib/handler`` Contains the various message handlers
 - ``/lib/rpc`` Contains the RPC server (optionally) embedded in the client.
-- ``/lib/sync`` Contains the various chain synchronizers
+- ``/lib/sync`` Contains the various chain synchronizers and ``Fetcher`` and ``Queue`` helpers.
 - ``/tests`` Contains test cases, testing helper functions, mocks and test data
 
 **Components**
@@ -198,11 +198,6 @@ to help contributors better understand how the project is organized.
 ``ethereumjs-blockchain``. It handles creation of the data directory, provides basic blockchain operations
 and maintains an updated current state of the blockchain, including current height, total difficulty, and
 latest block.
-- ``BlockPool`` [**In Progress**] This class holds segments of the blockchain that have been downloaded
-from other peers. Once valid, sequential segments are available, they are automatically added to the
-blockchain
-    - ``HeaderPool`` [**In Progress**] This is a subclass of ``BlockPool`` that holds header segments instead of
-    block segments. It is useful for light syncs when downloading sequential headers in parallel.
 - ``Server`` This class represents a server that discovers new peers and handles incoming and dropped
 connections. When a new peer connects, the ``Server`` class will negotiate protocols and emit a ``connected``
 event with a new ``Peer``instance. The peer will have properties corresponding to each protocol. For example,
@@ -224,7 +219,7 @@ low level ethereum protocols such as ``eth/62``, ``eth/62`` and ``les/2``. Subcl
 and ``removed`` events when new peers are added and removed and also emit the ``message`` event whenever
 any of the peers in the pool emit a message. Each ``Service`` has an associated ``PeerPool`` and they are used primarily by ``Synchronizer``s to help with blockchain synchronization.
 - ``Synchronizer`` Subclasses of this class implements a specific blockchain synchronization strategy. They
-also make use of subclasses of the ``Fetcher`` class that help fetch headers and bodies from pool peers.
+also make use of subclasses of the ``Fetcher`` class that help fetch headers and bodies from pool peers, and subclasses of the ``Queue`` class that tracks segments of blocks and headers as they are downloaded.
     - ``FastSynchronizer`` [**In Progress**] Implements fast syncing of the blockchain
     - ``LightSynchronizer`` [**In Progress**] Implements light syncing of the blockchain
 - ``Handler`` Subclasses of this class implements a protocol message handler. Handlers respond to incoming requests from peers.

@@ -8,14 +8,14 @@ defaultLogger.silent = true
 tape('[LightSynchronizer]', t => {
   class PeerPool extends EventEmitter {}
   td.replace('../../lib/net/peerpool', PeerPool)
-  const HeaderPool = td.constructor()
-  HeaderPool.prototype.open = td.func()
-  HeaderPool.prototype.add = td.func()
-  td.when(HeaderPool.prototype.open()).thenResolve()
-  td.when(HeaderPool.prototype.add('headers')).thenResolve()
+  const HeaderQueue = td.constructor()
+  HeaderQueue.prototype.open = td.func()
+  HeaderQueue.prototype.add = td.func()
+  td.when(HeaderQueue.prototype.open()).thenResolve()
+  td.when(HeaderQueue.prototype.add('headers')).thenResolve()
   const headers = [{number: 1}, {number: 2}]
-  td.when(HeaderPool.prototype.add(headers)).thenReject(new Error('err0'))
-  td.replace('../../lib/blockchain', { HeaderPool })
+  td.when(HeaderQueue.prototype.add(headers)).thenReject(new Error('err0'))
+  td.replace('../../lib/sync/queue', { HeaderQueue })
   class HeaderFetcher extends EventEmitter {}
   HeaderFetcher.prototype.add = td.func()
   HeaderFetcher.prototype.open = td.func()
@@ -28,7 +28,7 @@ tape('[LightSynchronizer]', t => {
     setTimeout(() => this.emit('headers', headers), 20)
   }
   HeaderFetcher.prototype.stop = async function () { this.running = false }
-  td.replace('../../lib/sync/headerfetcher', HeaderFetcher)
+  td.replace('../../lib/sync/fetcher', { HeaderFetcher })
   const LightSynchronizer = require('../../lib/sync/lightsync')
 
   t.test('should initialize correctly', async (t) => {

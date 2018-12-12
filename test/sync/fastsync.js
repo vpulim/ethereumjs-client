@@ -8,14 +8,14 @@ defaultLogger.silent = true
 tape('[FastSynchronizer]', t => {
   class PeerPool extends EventEmitter {}
   td.replace('../../lib/net/peerpool', PeerPool)
-  const BlockPool = td.constructor()
-  BlockPool.prototype.open = td.func()
-  BlockPool.prototype.add = td.func()
-  td.when(BlockPool.prototype.open()).thenResolve()
-  td.when(BlockPool.prototype.add('blocks')).thenResolve()
+  const BlockQueue = td.constructor()
+  BlockQueue.prototype.open = td.func()
+  BlockQueue.prototype.add = td.func()
+  td.when(BlockQueue.prototype.open()).thenResolve()
+  td.when(BlockQueue.prototype.add('blocks')).thenResolve()
   const blocks = [{header: {number: 1}}, {header: {number: 2}}]
-  td.when(BlockPool.prototype.add(blocks)).thenReject(new Error('err0'))
-  td.replace('../../lib/blockchain', { BlockPool })
+  td.when(BlockQueue.prototype.add(blocks)).thenReject(new Error('err0'))
+  td.replace('../../lib/sync/queue', { BlockQueue })
   class BlockFetcher extends EventEmitter {}
   BlockFetcher.prototype.add = td.func()
   BlockFetcher.prototype.open = td.func()
@@ -28,7 +28,7 @@ tape('[FastSynchronizer]', t => {
     setTimeout(() => this.emit('blocks', blocks), 20)
   }
   BlockFetcher.prototype.stop = async function () { this.running = false }
-  td.replace('../../lib/sync/blockfetcher', BlockFetcher)
+  td.replace('../../lib/sync/fetcher', { BlockFetcher })
   const FastSynchronizer = require('../../lib/sync/fastsync')
 
   t.test('should initialize correctly', async (t) => {

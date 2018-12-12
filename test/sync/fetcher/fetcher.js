@@ -2,15 +2,15 @@ const tape = require('tape-catch')
 const td = require('testdouble')
 const EventEmitter = require('events')
 const timers = require('testdouble-timers').default
-const { defaultLogger } = require('../../lib/logging')
+const { defaultLogger } = require('../../../lib/logging')
 defaultLogger.silent = true
 
 timers.use(td)
 
 tape('[Fetcher]', t => {
   class PeerPool extends EventEmitter {}
-  td.replace('../../lib/net/peerpool', PeerPool)
-  const Fetcher = require('../../lib/sync/fetcher')
+  td.replace('../../../lib/net/peerpool', PeerPool)
+  const Fetcher = require('../../../lib/sync/fetcher/fetcher')
 
   t.test('should initialize correctly', t => {
     const fetcher = new Fetcher({pool: new PeerPool()})
