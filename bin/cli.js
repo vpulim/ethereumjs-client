@@ -79,8 +79,8 @@ async function runNode (options) {
   node.on('listening', details => {
     logger.info(`Listener up transport=${details.transport} url=${details.url}`)
   })
-  node.on('synchronized', (stats) => {
-    logger.info(`Synchronized ${stats.count} ${stats.type === 'light' ? 'headers' : 'blocks'}`)
+  node.on('synchronized', () => {
+    logger.info('Synchronized')
   })
   logger.info(`Connecting to network: ${options.common.chainName()}`)
   await node.open()
