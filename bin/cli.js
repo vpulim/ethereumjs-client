@@ -60,6 +60,16 @@ const args = require('yargs')
       choices: [ 'error', 'warn', 'info', 'debug' ],
       default: 'info'
     },
+    'minPeers': {
+      describe: 'Peers needed before syncing',
+      number: true,
+      default: 2
+    },
+    'maxPeers': {
+      describe: 'Maximum peers to sync with',
+      number: true,
+      default: 25
+    },
     'params': {
       describe: 'Path to chain parameters json file',
       coerce: path.resolve
@@ -125,7 +135,9 @@ async function run () {
     lightserv: args.lightserv,
     db: level(dataDir),
     rpcport: args.rpcport,
-    rpcaddr: args.rpcaddr
+    rpcaddr: args.rpcaddr,
+    minPeers: args.minPeers,
+    maxPeers: args.maxPeers
   }
   const node = await runNode(options)
   const server = args.rpc ? runRpcServer(node, options) : null
